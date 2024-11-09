@@ -1,14 +1,10 @@
-import {
-	ClerkProvider,
-	// SignInButton,
-	// SignedIn,
-	// SignedOut,
-	// UserButton
-} from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
+
 import { ModalProvider } from "@/providers/modal-provider";
+
+import "./globals.css";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
@@ -35,7 +31,8 @@ export default function RootLayout({
 		<ClerkProvider>
 			<html lang="en">
 				<body
-					className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+					className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+				>
 					<ModalProvider />
 					{children}
 				</body>
