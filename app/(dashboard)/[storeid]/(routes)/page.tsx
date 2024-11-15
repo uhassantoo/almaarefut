@@ -1,7 +1,22 @@
-const DashboardPage = () => {
+import prismadb from "@/lib/db";
+
+interface DashboardProps {
+	params: {storeId: string}
+}
+
+const DashboardPage = async ({
+	params
+}: DashboardProps) => {
+	const store = await prismadb.store.findUnique({
+		where: {
+			id: params.storeId,
+		}
+	})
     return (
         <div>
-            This is a Dashboard
+            Active Store: {store?.name}
         </div>
     )
 }
+
+export default DashboardPage;
