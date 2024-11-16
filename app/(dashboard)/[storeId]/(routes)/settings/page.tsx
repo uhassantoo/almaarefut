@@ -6,9 +6,7 @@ import { redirect } from "next/navigation";
 import SettingsForm from "./_components/settings-form";
 
 interface SettingsPageProps {
-	params: {
-		storeId: string;
-	};
+	params: Promise<{storeId: string}>;
 }
 
 const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
@@ -18,9 +16,11 @@ const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
 		redirect("/sign-in");
 	}
 
+	const storeId = (await params).storeId;
+	
 	const store = await prismadb.store.findUnique({
 		where: {
-			id: params.storeId,
+			id: storeId,
 			userId,
 		},
 	});

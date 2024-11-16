@@ -1,15 +1,17 @@
 import prismadb from "@/lib/db";
 
-interface DashboardProps {
-	params: {storeId: string}
+interface DashboardPageProps {
+	params: Promise<{storeId: string}>;
 }
 
 const DashboardPage = async ({
 	params
-}: DashboardProps) => {
+}: DashboardPageProps) => {
+	const storeId = (await params).storeId;
+
 	const store = await prismadb.store.findUnique({
 		where: {
-			id: params.storeId,
+			id: storeId,
 		}
 	})
     return (

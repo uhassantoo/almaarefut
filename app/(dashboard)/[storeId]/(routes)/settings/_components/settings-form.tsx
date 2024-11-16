@@ -23,6 +23,8 @@ import {
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import AlertModal from "@/components/modals/alert-modal";
+import ApiAlert from "@/components/api-alert";
+import { useOrigin } from "@/hooks/use-origin";
 
 interface SettingsFormProps {
 	initialData: Store;
@@ -37,6 +39,7 @@ type SettingsFormValues = z.infer<typeof formSchema>;
 const SettingsForm = ({ initialData }: SettingsFormProps) => {
 	const params = useParams();
 	const router = useRouter();
+	const origin = useOrigin();
 
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -51,12 +54,12 @@ const SettingsForm = ({ initialData }: SettingsFormProps) => {
 			setLoading(true);
 			await axios.patch(`/api/stores/${params.storeId}`, data);
 
-			router.refresh()
+			router.refresh();
 			toast.success("Store updated.");
 		} catch {
-			toast.error("Something went wrong")
+			toast.error("Something went wrong");
 		} finally {
-			setLoading(false)
+			setLoading(false);
 		}
 	};
 
@@ -66,19 +69,26 @@ const SettingsForm = ({ initialData }: SettingsFormProps) => {
 			await axios.delete(`/api/stores/${params.storeId}`);
 
 			router.refresh();
-			router.push('/');
+			router.push("/");
 			toast.success("Store deleted.");
 		} catch {
-			toast.error("Make sure you removed all products and categories first.");
+			toast.error(
+				"Make sure you removed all products and categories first."
+			);
 		} finally {
-			setLoading(false)
-			setOpen(false)
+			setLoading(false);
+			setOpen(false);
 		}
 	};
 
 	return (
 		<>
-			<AlertModal isOpen={open} loading={loading} onClose={() => setOpen(false)} onConfirm={() => onDelete} />
+			<AlertModal
+				isOpen={open}
+				loading={loading}
+				onClose={() => setOpen(false)}
+				onConfirm={() => onDelete}
+			/>
 			<div className="flex items-center justify-between">
 				<Heading
 					title="Settings"
@@ -117,9 +127,21 @@ const SettingsForm = ({ initialData }: SettingsFormProps) => {
 							)}
 						/>
 					</div>
-					<Button disabled={loading} type="submit" className="ml-auto">Save Changes</Button>
+					<Button
+						disabled={loading}
+						type="submit"
+						className="ml-auto"
+					>
+						Save Changes
+					</Button>
 				</form>
 			</Form>
+			<Separator />
+			<ApiAlert
+				title="NEXT_PUBLIC_API_URL"
+				description={`${origin}/api/${params.storeId}`}
+				variant="public"
+			/>
 		</>
 	);
 };

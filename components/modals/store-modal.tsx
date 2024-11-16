@@ -5,7 +5,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useStoreModalStore } from "@/hooks/use-store-modal";
+import { useStoreModal } from "@/hooks/use-store-modal";
 import { Modal } from "@/components/modal";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +27,7 @@ const formSchema = z.object({
 
 export const StoreModal = () => {
 	const router = useRouter();
-	const storeModal = useStoreModalStore();
+	const storeModal = useStoreModal();
 
 	const [loading, setLoading] = useState(false);
 
@@ -41,17 +41,19 @@ export const StoreModal = () => {
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
 			setLoading(true);
-			
-			const response = await axios.post('/api/stores', values);
 
-			// window.location.assign(`/${response.data.id}`)
+			const response = await axios.post("/api/stores", values);
 
-			toast.success("Store created.")
+			toast.success("Store created.");
 
-			router.refresh()
-			router.push(`/${response.data.id}`)
+			storeModal.onClose();
+
+			router.refresh();
+			router.push(`/${response.data.id}`);
+
+			// window.location.reload()
 		} catch {
-			toast.error("Something went wrong")
+			toast.error("Something went wrong");
 		} finally {
 			setLoading(false);
 		}
@@ -67,9 +69,7 @@ export const StoreModal = () => {
 			<div>
 				<div className="space-y-4 py-2 pb-4">
 					<Form {...form}>
-						<form
-							onSubmit={form.handleSubmit(onSubmit)}
-						>
+						<form onSubmit={form.handleSubmit(onSubmit)}>
 							<FormField
 								control={form.control}
 								name="name"
@@ -96,7 +96,9 @@ export const StoreModal = () => {
 								>
 									Cancel
 								</Button>
-								<Button disabled={loading} type="submit">Continue</Button>
+								<Button disabled={loading} type="submit">
+									Continue
+								</Button>
 							</div>
 						</form>
 					</Form>
